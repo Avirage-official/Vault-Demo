@@ -1,1 +1,1 @@
-echo "Skipping build check"
+bun run build
