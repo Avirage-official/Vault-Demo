@@ -12,8 +12,6 @@ This file provides essential information for AI coding agents working on this pr
 - **Language**: TypeScript 5.7
 - **Styling**: Tailwind CSS v4
 - **UI Components**: shadcn/ui (New York style)
-- **Authentication**: Clerk (with Organizations/Billing support)
-- **Error Tracking**: Sentry
 - **Package Manager**: Bun (preferred) or npm
 
 The project follows a feature-based folder structure designed for scalability in SaaS applications, internal tools, and admin panels.
@@ -38,12 +36,6 @@ The project follows a feature-based folder structure designed for scalability in
 - Nuqs for URL search params state management
 - React Hook Form + Zod for form handling
 
-### Authentication & Authorization
-- Clerk for authentication and user management
-- Clerk Organizations for multi-tenant workspaces
-- Clerk Billing for subscription management (B2B)
-- Client-side RBAC for navigation visibility
-
 ### Data & APIs
 - TanStack Table for data tables
 - Recharts for analytics/charts
@@ -66,15 +58,11 @@ The project follows a feature-based folder structure designed for scalability in
 │   ├── dashboard/         # Dashboard routes
 │   │   ├── overview/      # Parallel routes (@area_stats, @bar_stats, etc.)
 │   │   ├── product/       # Product management pages
-│   │   ├── kanban/        # Kanban board page
-│   │   ├── workspaces/    # Organization management
-│   │   ├── billing/       # Subscription billing
-│   │   ├── exclusive/     # Pro plan feature example
-│   │   └── profile/       # User profile
+│   │   └── kanban/        # Kanban board page
 │   ├── api/               # API routes (if any)
 │   ├── layout.tsx         # Root layout with providers
 │   ├── page.tsx           # Landing page
-│   ├── global-error.tsx   # Sentry-integrated error boundary
+│   ├── global-error.tsx   # Global error boundary
 │   └── not-found.tsx      # 404 page
 │
 ├── components/
@@ -87,18 +75,16 @@ The project follows a feature-based folder structure designed for scalability in
 │   └── ...
 │
 ├── features/              # Feature-based modules
-│   ├── auth/              # Authentication components
 │   ├── overview/          # Dashboard analytics
 │   ├── products/          # Product management
-│   ├── kanban/            # Kanban board with dnd-kit
-│   └── profile/           # Profile management
+│   └── kanban/            # Kanban board with dnd-kit
 │
 ├── config/                # Configuration files
-│   ├── nav-config.ts      # Navigation with RBAC
+│   ├── nav-config.ts      # Navigation configuration
 │   └── ...
 │
 ├── hooks/                 # Custom React hooks
-│   ├── use-nav.ts         # RBAC navigation filtering
+│   ├── use-nav.ts         # Navigation filtering
 │   ├── use-data-table.ts  # Data table state
 │   └── ...
 │
@@ -116,13 +102,8 @@ The project follows a feature-based folder structure designed for scalability in
     └── themes/            # Individual theme files
 
 /docs                      # Documentation
-│   ├── clerk_setup.md     # Clerk configuration guide
-│   ├── nav-rbac.md        # Navigation RBAC documentation
+│   ├── nav-rbac.md        # Navigation documentation
 │   └── themes.md          # Theme customization guide
-
-/__CLEANUP__               # Feature removal scripts
-    ├── scripts/           # Cleanup automation
-    └── clerk/             # Templates after Clerk removal
 ```
 
 ---
@@ -159,30 +140,7 @@ bun run prepare      # Install Husky hooks
 
 ## Environment Configuration
 
-Copy `env.example.txt` to `.env.local` and configure:
-
-### Required for Authentication (Clerk)
-```env
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
-CLERK_SECRET_KEY=sk_...
-
-# Redirect URLs
-NEXT_PUBLIC_CLERK_SIGN_IN_URL="/auth/sign-in"
-NEXT_PUBLIC_CLERK_SIGN_UP_URL="/auth/sign-up"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/dashboard/overview"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/dashboard/overview"
-```
-
-### Optional for Error Tracking (Sentry)
-```env
-NEXT_PUBLIC_SENTRY_DSN=https://...@....ingest.sentry.io/...
-NEXT_PUBLIC_SENTRY_ORG=your-org
-NEXT_PUBLIC_SENTRY_PROJECT=your-project
-SENTRY_AUTH_TOKEN=sntrys_...
-NEXT_PUBLIC_SENTRY_DISABLED="false"  # Set to "true" to disable in dev
-```
-
-**Note**: Clerk supports "keyless mode" - the app works without API keys for initial development.
+No environment variables are required for this demo. The app runs without any authentication or error tracking services.
 
 ---
 
@@ -248,7 +206,7 @@ See `docs/themes.md` for detailed theming guide.
 
 ---
 
-## Navigation & RBAC System
+## Navigation System
 
 ### Navigation Configuration
 Navigation is defined in `src/config/nav-config.ts`:
@@ -259,59 +217,13 @@ export const navItems: NavItem[] = [
     title: 'Dashboard',
     url: '/dashboard/overview',
     icon: 'dashboard',
-    shortcut: ['d', 'd'],
-    access: { requireOrg: true }  // RBAC check
+    shortcut: ['d', 'd']
   }
 ];
 ```
 
-### Access Control Properties
-- `requireOrg: boolean` - Requires active organization
-- `permission: string` - Requires specific permission
-- `role: string` - Requires specific role
-- `plan: string` - Requires specific subscription plan
-- `feature: string` - Requires specific feature
-
-### Client-Side Filtering
-The `useFilteredNavItems()` hook in `src/hooks/use-nav.ts` filters navigation client-side using Clerk's `useOrganization()` and `useUser()` hooks. This is for UX only - actual security checks must happen server-side.
-
----
-
-## Authentication Patterns
-
-### Protected Routes
-Dashboard routes use Clerk's middleware pattern. Pages that require organization:
-
-```tsx
-import { auth } from '@clerk/nextjs';
-import { redirect } from 'next/navigation';
-
-export default async function Page() {
-  const { orgId } = await auth();
-  if (!orgId) redirect('/dashboard/workspaces');
-  // ...
-}
-```
-
-### Plan/Feature Protection
-Use Clerk's `<Protect>` component for client-side:
-
-```tsx
-import { Protect } from '@clerk/nextjs';
-
-<Protect plan="pro" fallback={<UpgradePrompt />}>
-  <PremiumContent />
-</Protect>
-```
-
-Use `has()` function for server-side checks:
-
-```tsx
-import { auth } from '@clerk/nextjs';
-
-const { has } = await auth();
-const hasFeature = has({ feature: 'premium_access' });
-```
+### Navigation Filtering
+The `useFilteredNavItems()` hook in `src/hooks/use-nav.ts` returns all nav items as-is for this demo.
 
 ---
 
@@ -344,21 +256,10 @@ Tables use TanStack Table with server-side filtering:
 
 ---
 
-## Error Handling & Monitoring
-
-### Sentry Integration
-Sentry is configured for both client and server:
-- Client config: `src/instrumentation-client.ts`
-- Server config: `src/instrumentation.ts`
-- Global error: `src/app/global-error.tsx`
-
-To disable Sentry in development:
-```env
-NEXT_PUBLIC_SENTRY_DISABLED="true"
-```
+## Error Handling
 
 ### Error Boundaries
-- `global-error.tsx` - Catches all errors, reports to Sentry
+- `global-error.tsx` - Catches all errors and logs to console
 - Parallel route `error.tsx` files for specific sections
 
 ---
@@ -385,40 +286,11 @@ Recommended test locations:
 
 ### Vercel (Recommended)
 1. Connect repository to Vercel
-2. Add environment variables in dashboard
-3. Deploy
-
-### Environment Variables for Production
-Ensure these are set in your deployment platform:
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-- `CLERK_SECRET_KEY`
-- All `NEXT_PUBLIC_*` variables for client-side access
-- `SENTRY_*` variables if using error tracking
+2. Deploy — no environment variables required
 
 ### Build Considerations
 - Output: Static + Server (default Next.js)
-- Images: Configured for `api.slingacademy.com`, `img.clerk.com`, `clerk.com`
-- Sentry source maps uploaded automatically in CI
-
----
-
-## Feature Cleanup System
-
-The `__CLEANUP__` folder contains scripts to remove optional features:
-
-```bash
-# List available features
-node __CLEANUP__/scripts/cleanup.js --list
-
-# Remove specific features
-node __CLEANUP__/scripts/cleanup.js clerk    # Remove auth/org/billing
-node __CLEANUP__/scripts/cleanup.js kanban   # Remove kanban board
-node __CLEANUP__/scripts/cleanup.js sentry   # Remove error tracking
-```
-
-**Safety**: Script requires git repository with at least one commit. Use `--force` to skip.
-
-After cleanup, delete the `__CLEANUP__` folder.
+- Images: Configured for `api.slingacademy.com`
 
 ---
 
@@ -451,28 +323,21 @@ See "Theming System" section above or `docs/themes.md`.
 - Ensure using Tailwind CSS v4 syntax (`@import 'tailwindcss'`)
 - Check `postcss.config.js` uses `@tailwindcss/postcss`
 
-**Clerk keyless mode popup**
-- Normal in development without API keys
-- Click popup to claim application or set env variables
-
 **Theme not applying**
 - Check theme name matches in CSS `[data-theme]` and `theme.config.ts`
 - Verify theme CSS is imported in `theme.css`
 
 **Navigation items not showing**
-- Check `access` property in nav config
-- Verify user has required org/permission/role
+- Check `src/config/nav-config.ts` for nav item configuration
 
 ---
 
 ## External Documentation
 
 - [Next.js App Router](https://nextjs.org/docs/app)
-- [Clerk Next.js SDK](https://clerk.com/docs/references/nextjs)
 - [shadcn/ui](https://ui.shadcn.com/docs)
 - [Tailwind CSS v4](https://tailwindcss.com/docs)
 - [TanStack Table](https://tanstack.com/table/latest)
-- [Sentry Next.js](https://docs.sentry.io/platforms/javascript/guides/nextjs/)
 
 ---
 

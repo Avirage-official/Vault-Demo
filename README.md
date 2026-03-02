@@ -53,8 +53,6 @@ Sarah's portfolio includes 17 positions across US equities (AAPL, MSFT, NVDA, TS
 
 ### Platform Features
 
-- 🔐 **Authentication** — Clerk with organizations, teams, and billing
-- 🔒 **RBAC Navigation** — Role-based access control for navigation items
 - 🧠 **Feature-based Architecture** — Scalable folder structure
 - ⌨️ **Command Palette** — Cmd+K search with kbar
 - 🖥️ **Parallel Routes** — Independent loading and error states per chart
@@ -72,9 +70,7 @@ Sarah's portfolio includes 17 positions across US equities (AAPL, MSFT, NVDA, TS
 | **State Management** | [Zustand](https://zustand-demo.pmnd.rs) |
 | **URL State** | [Nuqs](https://nuqs.47ng.com/) |
 | **Forms** | [React Hook Form](https://react-hook-form.com) + [Zod](https://zod.dev) |
-| **Auth** | [Clerk](https://clerk.com) |
 | **Drag & Drop** | [dnd-kit](https://dndkit.com) |
-| **Error Tracking** | [Sentry](https://sentry.io) |
 
 ## Getting Started
 
@@ -93,17 +89,11 @@ cd Vault-Demo
 # Install dependencies
 bun install
 
-# Configure environment
-cp env.example.txt .env.local
-# Add Clerk API keys to .env.local (see docs/SETUP.md)
-
 # Start development server
 bun run dev
 ```
 
 The application will be available at **http://localhost:3000**.
-
-> **Note**: Clerk supports "keyless mode" — the app works without API keys for initial development.
 
 For the complete setup guide, see [`docs/SETUP.md`](./docs/SETUP.md).
 
@@ -126,8 +116,7 @@ src/
 ├── features/                   # Feature-based modules
 │   ├── overview/components/    # AreaGraph, BarGraph, PieGraph, RecentSales
 │   ├── products/components/    # ProductListing, DataTable, Columns
-│   ├── kanban/components/      # KanbanBoard, TaskCard, BoardColumn
-│   └── profile/components/     # ProfileForm
+│   └── kanban/components/      # KanbanBoard, TaskCard, BoardColumn
 │
 ├── components/                 # Shared components
 │   ├── ui/                     # 50+ Shadcn/UI components
@@ -212,9 +201,7 @@ See [`docs/BROKER_INTEGRATION.md`](./docs/BROKER_INTEGRATION.md) for the full in
 | [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) | System architecture: data, component, and visualization layers |
 | [`docs/BROKER_INTEGRATION.md`](./docs/BROKER_INTEGRATION.md) | Future broker API integration roadmap |
 | [`docs/COMPONENT_INVENTORY.md`](./docs/COMPONENT_INVENTORY.md) | Dashboard component catalog with data mapping |
-| [`docs/clerk_setup.md`](./docs/clerk_setup.md) | Clerk authentication configuration |
 | [`docs/themes.md`](./docs/themes.md) | Theme customization guide |
-| [`docs/nav-rbac.md`](./docs/nav-rbac.md) | RBAC navigation system |
 
 ## Available Scripts
 

@@ -31,17 +31,7 @@ bun install
 npm install
 ```
 
-### 3. Configure Environment
-
-Copy the example environment file:
-
-```bash
-cp env.example.txt .env.local
-```
-
-Add the required environment variables to `.env.local`. See [Environment Variables](#environment-variables) below.
-
-### 4. Start Development Server
+### 3. Start Development Server
 
 ```bash
 # Using Bun
@@ -52,37 +42,6 @@ npm run dev
 ```
 
 The application will be available at **http://localhost:3000**.
-
----
-
-## Environment Variables
-
-### Required: Authentication (Clerk)
-
-```env
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
-CLERK_SECRET_KEY=sk_...
-
-# Redirect URLs
-NEXT_PUBLIC_CLERK_SIGN_IN_URL="/auth/sign-in"
-NEXT_PUBLIC_CLERK_SIGN_UP_URL="/auth/sign-up"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/dashboard/overview"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/dashboard/overview"
-```
-
-> **Note**: Clerk supports "keyless mode" — the app works without API keys for initial development. You'll see a Clerk popup that you can use to claim your application.
-
-For detailed Clerk setup (including organizations, teams, and billing), see [`/docs/clerk_setup.md`](./clerk_setup.md).
-
-### Optional: Error Tracking (Sentry)
-
-```env
-NEXT_PUBLIC_SENTRY_DSN=https://...@....ingest.sentry.io/...
-NEXT_PUBLIC_SENTRY_ORG=your-org
-NEXT_PUBLIC_SENTRY_PROJECT=your-project
-SENTRY_AUTH_TOKEN=sntrys_...
-NEXT_PUBLIC_SENTRY_DISABLED="true"  # Set to "true" to disable in dev
-```
 
 ---
 
@@ -237,7 +196,6 @@ This adds the component to `/src/components/ui/`.
 ```
 src/
 ├── app/                    # Next.js App Router pages
-│   ├── (auth)/             # Authentication routes
 │   ├── dashboard/          # Dashboard pages
 │   │   ├── overview/       # Analytics with parallel routes
 │   │   ├── product/        # Product management
@@ -252,8 +210,7 @@ src/
 ├── features/               # Feature-based modules
 │   ├── overview/           # Dashboard analytics components
 │   ├── products/           # Product table + forms
-│   ├── kanban/             # Drag-and-drop task board
-│   └── profile/            # User profile management
+│   └── kanban/             # Drag-and-drop task board
 │
 ├── lib/                    # Core utilities
 │   ├── types/index.ts      # Financial TypeScript interfaces
@@ -272,21 +229,16 @@ src/
 
 ## Troubleshooting
 
-### Build Fails with Tailwind Errors
+### Troubleshooting: Build Fails with Tailwind Errors
 - Ensure using Tailwind CSS v4 syntax (`@import 'tailwindcss'`)
 - Check that `postcss.config.js` uses `@tailwindcss/postcss`
-
-### Clerk Keyless Mode Popup
-- Normal in development without API keys
-- Click the popup to claim your application, or set environment variables
 
 ### Theme Not Applying
 - Check theme name matches in CSS `[data-theme]` and `theme.config.ts`
 - Verify theme CSS is imported in `theme.css`
 
 ### Navigation Items Not Showing
-- Check `access` property in `/src/config/nav-config.ts`
-- Verify user has the required organization/permission/role
+- Check navigation items in `/src/config/nav-config.ts`
 
 ---
 
@@ -297,5 +249,4 @@ src/
 - **Broker Integration**: [`/docs/BROKER_INTEGRATION.md`](./BROKER_INTEGRATION.md) — Future API integration roadmap
 - **Architecture**: [`/docs/ARCHITECTURE.md`](./ARCHITECTURE.md) — System architecture overview
 - **Component Inventory**: [`/docs/COMPONENT_INVENTORY.md`](./COMPONENT_INVENTORY.md) — Dashboard component documentation
-- **Clerk Setup**: [`/docs/clerk_setup.md`](./clerk_setup.md) — Authentication configuration
 - **Themes**: [`/docs/themes.md`](./themes.md) — Theme customization guide
